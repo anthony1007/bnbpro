@@ -1,19 +1,9 @@
-// src/app/(auth)/support/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { THEME } from "@/lib/theme";
 import { FaPaperPlane, FaUserCircle, FaInbox, FaReply } from "react-icons/fa";
-
-/**
- * Support page (auth)
- * - Hiển thị ticket của user (hoặc tất cả nếu user là ADMIN)
- * - Tạo ticket mới
- * - Nếu user là admin, hiển thị reply form cho từng ticket
- *
- * Giao diện: dark luxury, responsive
- */
 
 type Reply = {
   id: number;

@@ -9,7 +9,7 @@ import { BsCreditCard } from "react-icons/bs";
 import { BiSupport } from "react-icons/bi";
 
 const NavBarItem = ({ title, classprops }: NavBarItemProps) => (
-  <li className={`font-[600] hover:text-bnb-gold text-sm cursor-pointer ${classprops || ''}`}>{title}</li>
+  <li className={`font-semibold hover:text-bnb-gold text-sm cursor-pointer ${classprops || ''}`}>{title}</li>
 );
 
 const Navbar = () => {
@@ -57,7 +57,7 @@ const Navbar = () => {
         )}
         {toggleMenu && (
           <ul
-            className="z-10 p-2 fixed -top-0 -right-2 w-screen h-screen shadow-2xl md:hidden list-none
+            className="z-10 p-2 fixed top-0 -right-2 w-screen h-screen shadow-2xl md:hidden list-none
             flex flex-col justify-items-start items-start bg-[#181a20] text-white animate-slide-in gap-y-5"
           >
             <div className="flex justify-between w-full gap-x-2">

@@ -1,5 +1,3 @@
-// components/ui/button.tsx
-
 import * as React from "react"
 
 export interface ButtonProps

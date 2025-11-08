@@ -82,7 +82,7 @@ export default function ResetPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className={`text-black w-full mt-4 border-[1px] p-3 border-[#3d4f7c] rounded-[12px] cursor-pointer ${
+              className={`text-black w-full mt-4 border p-3 border-[#3d4f7c] rounded-xl cursor-pointer ${
                 loading
                   ? "bg-gray-700 border-gray-500 text-white cursor-not-allowed"
                   : "bg-bnb-yellow border-[#3d4f7c] text-black hover:bg-[#E0B90B]"

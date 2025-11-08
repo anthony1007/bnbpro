@@ -1,4 +1,3 @@
-// src/app/api/history/list/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyUser } from "@/lib/verify";

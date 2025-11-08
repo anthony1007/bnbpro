@@ -138,7 +138,7 @@ export default function RegisterPage() {
               type="submit"
               className={`
                 text-black w-full border p-3 border-[#3d4f7c]
-                rounded-[12px] cursor-pointer bg-bnb-yellow hover:bg-bnb-gold
+                rounded-xl cursor-pointer bg-bnb-yellow hover:bg-bnb-gold
               `}
             >
               Sign Up

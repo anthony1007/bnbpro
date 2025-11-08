@@ -1,4 +1,3 @@
-// src/app/api/deposit/webhook/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { ethers } from "ethers";
@@ -7,10 +6,6 @@ import { Prisma } from "@prisma/client";
 const RPC = process.env.SEPOLIA_RPC_URL || process.env.RPC_URL;
 const provider = new ethers.JsonRpcProvider(RPC);
 
-/**
- * Webhook endpoint để cập nhật deposit (dùng khi bạn có watcher node/process hoặc webhook)
- * Body expected: { txHash: string } OR { txHash, to, from, amountWei }
- */
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));

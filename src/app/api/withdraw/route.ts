@@ -12,15 +12,6 @@ const provider = new ethers.JsonRpcProvider(RPC);
 const signer = WITHDRAW_PK ? new ethers.Wallet(WITHDRAW_PK, provider) : null;
 
 export async function POST(req: Request) {
-  /**
-   * Body: { amount: string (in ether), recipient: string }
-   * Flow:
-   * - verify user
-   * - check sufficient DB balance
-   * - deduct DB balance, create Transaction PENDING
-   * - sign+send onchain from server withdraw wallet (signer)
-   * - on success update txHash,status SUCCESS; on fail rollback and status FAILED
-   */
   try {
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value ?? null;

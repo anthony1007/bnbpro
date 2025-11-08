@@ -1,5 +1,3 @@
-
-// src/app/(auth)/bnbfund/page.tsx
 "use client";
 import React, { useEffect, useState } from "react";
 import FundCard from "@/components/FundCard";

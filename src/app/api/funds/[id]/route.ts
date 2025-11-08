@@ -1,4 +1,3 @@
-// src/app/api/funds/[id]/route.ts
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { verifyAdmin } from "@/lib/verify";

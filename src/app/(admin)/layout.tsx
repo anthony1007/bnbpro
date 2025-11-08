@@ -9,7 +9,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="flex-shink-0">
         <NavbarAdmin />              
       </div>
-      <div className="flex-grow-1 overflow-auto min-h-2em">
+      <div className="grow overflow-auto min-h-2em">
         {children}
       </div> 
       <div className="flex-shink-0">

@@ -9,7 +9,7 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
       <div className="flex-shink-0">
         <NavbarAuth />              
       </div>
-      <div className="flex-grow-1 overflow-auto min-h-2em">
+      <div className="grow overflow-auto min-h-2em">
         {children}
       </div> 
       <div className="flex-shink-0">

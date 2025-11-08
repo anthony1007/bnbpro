@@ -69,7 +69,7 @@ export default function LoginPage() {
               </div>
               <button
                 type="submit"
-                className="text-black w-full mt-4 border-[1px] p-3 border-[#3d4f7c] hover:bg-[#E0B90B] bg-bnb-yellow rounded-[12px] cursor-pointer"
+                className="text-black w-full mt-4 border p-3 border-[#3d4f7c] hover:bg-[#E0B90B] bg-bnb-yellow rounded-xl cursor-pointer"
               >Log in
               </button>
             </form>

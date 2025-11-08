@@ -1,4 +1,3 @@
-// src/app/api/funds/claim/route.ts
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import prisma from "@/lib/prisma";
@@ -6,18 +5,6 @@ import { verifyUser } from "@/lib/verify";
 import { Prisma } from "@prisma/client";
 
 export async function POST(req: Request) {
-  /**
-   * Body: { purchaseId: number }
-   * Flow:
-   * - verify user
-   * - load FundPurchase
-   * - check ownership, isActive
-   * - check nextClaimAt <= now
-   * - compute claimAmount = package * (perday / 100)
-   * - ensure not exceed maxClaimable, and not past expiresAt/quarter
-   * - update FundPurchase (lastClaimedAt, nextClaimAt, totalClaimed, maybe isActive=false)
-   * - update user.balanceWei
-   */
   try {
     const cookieStore = cookies();
     const token = (await cookieStore).get("token")?.value ?? null;

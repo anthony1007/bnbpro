@@ -1,38 +1,3 @@
-// // src/app/api/funds/create/route.ts
-// import { NextResponse } from "next/server";
-// import { verifyAdminServer } from "@/lib/verify";
-// import prisma from "@/lib/prisma";
-
-// export const runtime = "nodejs";
-
-// export async function POST(req: Request) {
-//   try {
-//     const admin = await verifyAdminServer();
-//     if (!admin)
-//       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-
-//     const body = await req.json();
-//     if (!body.plan || !body.package)
-//       return NextResponse.json({ ok: false, error: "Missing fields" }, { status: 400 });
-
-//     const fund = await prisma.fund.create({
-//       data: {
-//         plan: body.plan,
-//         package: Number(body.package),
-//         perday: body.perday ? Number(body.perday) : null,
-//         quarter: body.quarter ? Number(body.quarter) : null,
-//         imageId: body.imageId ?? null,
-//       },
-//     });
-
-//     return NextResponse.json({ ok: true, fund });
-//   } catch (err: any) {
-//     console.error("Create fund error:", err);
-//     return NextResponse.json({ ok: false, error: err.message }, { status: 500 });
-//   }
-// }
-
-
 import { NextResponse } from "next/server";
 import { verifyAdmin } from "@/lib/verify";
 import prisma from "@/lib/prisma";
