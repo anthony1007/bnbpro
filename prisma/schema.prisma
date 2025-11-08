@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  address      String?   
+  phone        String?      
+  password     String
+  name         String?
+  sponsor      String?
+  resetToken   String?
+  resetExpires DateTime?
+  role         Role            @default(USER)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @default(now()) @updatedAt
+  balanceWei   Decimal         @default("0")
+  walletAddress  String?       @unique
+
+  // Relations
+  fundPurchase       FundPurchase[]
+  transactions       Transaction[]
+  userWallet         UserWallet[]
+  profitHistory      ProfitHistory[]
+  depositAddress     DepositAddress[]
+  supportTicket      SupportTicket[]
+}
+
+model Fund {
+  id        String   @id @default(cuid())
+  plan      String
+  package   Int
+  perday    Float?
+  quarter   Int?
+  imageId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+
+  image           Image?  @relation(fields: [imageId], references: [id], onDelete: SetNull)
+  fundPurchase    FundPurchase[]
+  profitHistory   ProfitHistory[]
+  transaction     Transaction[]
+}
+
+model ProfitHistory {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  fundId      String
+  amount      Float
+  claimedAt   DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id])
+  fund        Fund     @relation(fields: [fundId], references: [id])
+}
+
+model FundPurchase {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  fundId         String
+  package        Int?              // giá trị gói lúc mua (snapshot)
+  perday         Float?            // % lợi nhuận/ngày (snapshot)
+  quarter        Int?              // số ngày chu kỳ (snapshot)
+  status         String   @default("PENDING") // PENDING | ACTIVE | COMPLETED | FAILED
+  joinedAt       DateTime @default(now())      // ngày mua
+  lastClaimedAt  DateTime @default(now())      // ngày claim gần nhất
+  totalClaimed   Float    @default(0)          // tổng số tiền đã claim
+  nextClaimAt    DateTime?                     // thời điểm tiếp theo được claim
+  isActive       Boolean  @default(true)
+  expiresAt      DateTime?                     // ngày hết hạn (joinedAt + quarter)
+  maxClaimable   Float?                        // tổng số tiền có thể claim tối đa
+  txHash         String?                       // transaction hash on-chain (nếu có)
+  remarks        String?                       // ghi chú cho admin/debug
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fund Fund @relation(fields: [fundId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, fundId])
+}
+
+
+model UserWallet {
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  address        String   @unique
+  createdAt      DateTime @default(now())
+  lastSweepAt    DateTime?
+  isActive       Boolean  @default(true)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([userId])
+}
+
+model DepositAddress {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  address         String   @unique
+  chain           String   @default("bsc")
+  derivationIndex Int
+  createdAt       DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+model Transaction {
+  id             Int            @id @default(autoincrement())
+  userId         Int
+  fundId         String?
+  type           TransactionType
+  amount         Decimal        @default("0") // lưu raw số wei
+  tokenSymbol    String?        // ETH, USDT, USDC, v.v.
+  tokenAddress   String?        // địa chỉ token, null nếu native coin
+  txHash         String?        @unique
+  from           String?        // địa chỉ nguồn (ví user gửi)
+  to             String?        // địa chỉ đích (ví của hệ thống hoặc khác)
+  status         TxStatus       @default(PENDING)
+  network        String?        // ví dụ: "bsc", "ethereum", "polygon"
+  remarks        String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fund Fund? @relation(fields: [fundId], references: [id], onDelete: SetNull)
+}
+
+model Image {
+  id     String @id @default(cuid())
+  url    String
+  height Int?
+  width  Int?
+  funds  Fund[]
+}
+
+model SupportTicket {
+  id          Int             @id @default(autoincrement())
+  userId      Int
+  subject     String
+  message     String
+  status      TicketStatus     @default(OPEN)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replies     TicketReply[]
+
+  @@index([status])
+}
+
+model TicketReply {
+  id          Int       @id @default(autoincrement())
+  ticketId    Int
+  userId      Int?
+  adminId     Int?
+  message     String
+  createdAt   DateTime  @default(now())
+
+  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  CLOSED
+}
+
+enum TransactionType {
+  Deposit
+  Withdraw
+  Profit
+  Claim
+}
+
+enum TxStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum Role {
+  ADMIN
+  USER
+}

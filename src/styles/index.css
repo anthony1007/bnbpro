@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@font-face{
+    font-family: "Binance PLEX";
+    src: url("https://db.onlinewebfonts.com/t/d05c19ccecf7003d248c60ffd6b5e8f7.eot");
+    src: url("https://db.onlinewebfonts.com/t/d05c19ccecf7003d248c60ffd6b5e8f7.eot?#iefix")format("embedded-opentype"),
+        url("https://db.onlinewebfonts.com/t/d05c19ccecf7003d248c60ffd6b5e8f7.woff")format("woff"),
+        url("https://db.onlinewebfonts.com/t/d05c19ccecf7003d248c60ffd6b5e8f7.woff2")format("woff2"),
+        url("https://db.onlinewebfonts.com/t/d05c19ccecf7003d248c60ffd6b5e8f7.ttf")format("truetype"),
+        url("https://db.onlinewebfonts.com/t/d05c19ccecf7003d248c60ffd6b5e8f7.svg#Binance PLEX")format("svg");
+    font-weight:normal;
+    font-style:normal;
+    font-display:swap;
+}
+
+* html {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Binance PLEX", "Open Sans", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.gradient-bg-welcome {
+  background-color:#0f0e13;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+    radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+}
+
+.gradient-bg-services {
+  background-color:#0f0e13;
+  background-image: 
+    radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 100%, hsla(225,39%,25%,1) 0, transparent 50%);
+}
+
+.gradient-bg-transactions {
+  background-color: #0f0e13;
+  background-image: 
+    radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 50%), 
+    radial-gradient(at 50% 0%, hsla(225,39%,25%,1) 0, transparent 50%);
+}
+
+.gradient-bg-footer {
+  background-color: #0f0e13;
+  background-image: 
+    radial-gradient(at 0% 100%, hsla(253,16%,7%,1) 0, transparent 53%), 
+    radial-gradient(at 50% 150%, hsla(339,49%,30%,1) 0, transparent 50%);
+}
+
+.blue-glassmorphism {
+  background: rgb(39, 51, 89, 0.4);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.grey-border {
+  border-radius: 16px;
+  box-shadow: 0 4px 3px rgba(222, 217, 217, 0.2);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* white glassmorphism */
+.white-glassmorphism {
+  padding: 12px;
+  background: rgb(24, 26, 32);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+input:focus {
+  border: 1px solid #fcd535;
+  outline: none;
+}
+
+.index {
+  z-index: -2;
+}
+
+.text-bnb-gold {
+  color: #E0B90B;
+}
+
+.text-bnb-yellow {
+  color: #fcd535;
+}
+
+.text-bnb-black {
+  color: #181a20;
+}
+
+.text-bnb-gray {
+  color: #1e2329;
+}
+
+.bg-bnb-gold {
+  background-color: #E0B90B;
+}
+
+.bg-bnb-yellow {
+  background-color: #fcd535;
+}
+
+.bg-bnb-black {
+  background-color: #181a20;
+}
+
+.bg-bnb-gray {
+  background-color: #1e2329;
+}
+
+.eth-card {
+  width: 330px ;
+  height: 200px;
+  position: relative;
+  z-index: -1;
+  background-color:#000000;
+  background-image: 
+    radial-gradient(at 83% 67%, rgb(234, 255, 5) 0, transparent 58%), 
+    radial-gradient(at 67% 20%, rgb(193, 181, 10) 0, transparent 59%), 
+    radial-gradient(at 88% 35%, rgb(219, 205, 7) 0, transparent 50%), 
+    radial-gradient(at 31% 91%, rgb(208, 182, 15) 0, transparent 52%), 
+    radial-gradient(at 27% 71%, rgb(224, 207, 17) 0, transparent 49%), 
+    radial-gradient(at 74% 89%, rgb(195, 185, 6) 0, transparent 51%), 
+    radial-gradient(at 53% 75%, rgb(243, 239, 10) 0, transparent 45%);
+}
+
+.text-gradient {
+  background-color: #fff;
+  background-image: radial-gradient(at 4% 36%, hsla(0,0%,100%,1) 0, transparent 53%), radial-gradient(at 100% 60%, rgb(0, 0, 0) 0, transparent 50%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+
+
