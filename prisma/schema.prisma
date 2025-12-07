@@ -1,190 +1,174 @@
-generator client {
-  provider = "prisma-client-js"
-}
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id           Int             @id @default(autoincrement())
-  email        String          @unique
-  address      String?   
-  phone        String?      
-  password     String
-  name         String?
-  sponsor      String?
-  resetToken   String?
-  resetExpires DateTime?
-  role         Role            @default(USER)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @default(now()) @updatedAt
-  balanceWei   Decimal         @default("0")
-  walletAddress  String?       @unique
-
-  // Relations
-  fundPurchase       FundPurchase[]
-  transactions       Transaction[]
-  userWallet         UserWallet[]
-  profitHistory      ProfitHistory[]
-  depositAddress     DepositAddress[]
-  supportTicket      SupportTicket[]
-}
-
-model Fund {
-  id        String   @id @default(cuid())
-  plan      String
-  package   Int
-  perday    Float?
-  quarter   Int?
-  imageId   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
-  image           Image?  @relation(fields: [imageId], references: [id], onDelete: SetNull)
-  fundPurchase    FundPurchase[]
-  profitHistory   ProfitHistory[]
-  transaction     Transaction[]
-}
-
-model ProfitHistory {
-  id          Int      @id @default(autoincrement())
-  userId      Int
-  fundId      String
-  amount      Float
-  claimedAt   DateTime @default(now())
-  createdAt   DateTime @default(now())
-
-  user        User     @relation(fields: [userId], references: [id])
-  fund        Fund     @relation(fields: [fundId], references: [id])
-}
-
-model FundPurchase {
-  id             Int       @id @default(autoincrement())
-  userId         Int
-  fundId         String
-  package        Int?              // giá trị gói lúc mua (snapshot)
-  perday         Float?            // % lợi nhuận/ngày (snapshot)
-  quarter        Int?              // số ngày chu kỳ (snapshot)
-  status         String   @default("PENDING") // PENDING | ACTIVE | COMPLETED | FAILED
-  joinedAt       DateTime @default(now())      // ngày mua
-  lastClaimedAt  DateTime @default(now())      // ngày claim gần nhất
-  totalClaimed   Float    @default(0)          // tổng số tiền đã claim
-  nextClaimAt    DateTime?                     // thời điểm tiếp theo được claim
-  isActive       Boolean  @default(true)
-  expiresAt      DateTime?                     // ngày hết hạn (joinedAt + quarter)
-  maxClaimable   Float?                        // tổng số tiền có thể claim tối đa
-  txHash         String?                       // transaction hash on-chain (nếu có)
-  remarks        String?                       // ghi chú cho admin/debug
-
-  // Relations
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fund Fund @relation(fields: [fundId], references: [id], onDelete: Cascade)
-
-  @@unique([userId, fundId])
-}
-
-
-model UserWallet {
-  id             Int      @id @default(autoincrement())
-  userId         Int
-  address        String   @unique
-  createdAt      DateTime @default(now())
-  lastSweepAt    DateTime?
-  isActive       Boolean  @default(true)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  @@unique([userId])
-}
-
-model DepositAddress {
-  id              Int      @id @default(autoincrement())
-  userId          Int
-  address         String   @unique
-  chain           String   @default("bsc")
-  derivationIndex Int
-  createdAt       DateTime @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-
-model Transaction {
-  id             Int            @id @default(autoincrement())
-  userId         Int
-  fundId         String?
-  type           TransactionType
-  amount         Decimal        @default("0") // lưu raw số wei
-  tokenSymbol    String?        // ETH, USDT, USDC, v.v.
-  tokenAddress   String?        // địa chỉ token, null nếu native coin
-  txHash         String?        @unique
-  from           String?        // địa chỉ nguồn (ví user gửi)
-  to             String?        // địa chỉ đích (ví của hệ thống hoặc khác)
-  status         TxStatus       @default(PENDING)
-  network        String?        // ví dụ: "bsc", "ethereum", "polygon"
-  remarks        String?
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fund Fund? @relation(fields: [fundId], references: [id], onDelete: SetNull)
-}
-
-model Image {
-  id     String @id @default(cuid())
-  url    String
-  height Int?
-  width  Int?
-  funds  Fund[]
-}
-
-model SupportTicket {
-  id          Int             @id @default(autoincrement())
-  userId      Int
-  subject     String
-  message     String
-  status      TicketStatus     @default(OPEN)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
-
-  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
-  replies     TicketReply[]
-
-  @@index([status])
-}
-
-model TicketReply {
-  id          Int       @id @default(autoincrement())
-  ticketId    Int
-  userId      Int?
-  adminId     Int?
-  message     String
-  createdAt   DateTime  @default(now())
-
-  ticket      SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-}
-
-enum TicketStatus {
-  OPEN
-  IN_PROGRESS
-  CLOSED
-}
-
-enum TransactionType {
-  Deposit
-  Withdraw
-  Profit
-  Claim
-}
-
-enum TxStatus {
-  PENDING
-  SUCCESS
-  FAILED
+generator client {
+  provider = "prisma-client-js"
 }
 
 enum Role {
-  ADMIN
   USER
+  ADMIN
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  walletAddress String    @unique
+  refCode       String    @unique
+
+  name          String?
+  avatar        String?
+  language      String?
+
+  referrerId    Int?
+  referrer      User?     @relation("UserReferrals", fields: [referrerId], references: [id])
+  referrals     User[]    @relation("UserReferrals")
+
+  role          Role      @default(USER)
+  balance       Decimal   @default(0) @db.Decimal(36, 18)
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  deposits      Deposit[]
+  withdrawals   Withdrawal[]
+  fundPurchases FundPurchase[]
+  commissions   Commission[]
+  tickets       SupportTicket[]
+  claims        ClaimHistory[]
+  transactions  Transaction[]
+}
+
+model Fund {
+  id           Int       @id @default(autoincrement())
+  name         String
+  description  String?
+  minAmount    Decimal   @db.Decimal(36, 18)
+  dailyRate    Decimal   @db.Decimal(10, 4)  // %/day, ví dụ 1.5 = 1.5%
+  durationDays Int
+  isActive     Boolean   @default(true)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  purchases    FundPurchase[]
+}
+
+model FundPurchase {
+  id           Int       @id @default(autoincrement())
+  userId       Int
+  fundId       Int
+  amount       Decimal   @db.Decimal(36, 18)
+
+  // Snapshot thông số gói tại thời điểm mua
+  dailyRate    Decimal   @db.Decimal(10, 4)
+  durationDays Int
+
+  startAt      DateTime
+  endAt        DateTime
+  lastClaimAt  DateTime
+  totalClaimed Decimal   @default(0) @db.Decimal(36, 18)
+
+  status       String    @default("ACTIVE") // ACTIVE | COMPLETED
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  user         User      @relation(fields: [userId], references: [id])
+  fund         Fund      @relation(fields: [fundId], references: [id])
+  claims       ClaimHistory[]
+}
+
+model ClaimHistory {
+  id             Int       @id @default(autoincrement())
+  userId         Int
+  fundPurchaseId Int
+  amount         Decimal   @db.Decimal(36, 18)
+  createdAt      DateTime  @default(now())
+
+  user           User         @relation(fields: [userId], references: [id])
+  fundPurchase   FundPurchase @relation(fields: [fundPurchaseId], references: [id])
+}
+
+model Deposit {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Decimal  @db.Decimal(36, 18)
+  txHash    String?  @unique
+  status    String   // PENDING | SUCCESS | FAILED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Withdrawal {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  amount    Decimal  @db.Decimal(36, 18)
+  toAddress String
+  txHash    String?
+  status    String   // PROCESSING | SUCCESS | FAILED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Commission {
+  id          Int      @id @default(autoincrement())
+  userId      Int      // người nhận hoa hồng
+  fromUserId  Int      // tuyến dưới tạo doanh số
+  level       Int      // 1 / 2 / 3
+  percent     Decimal  @db.Decimal(10, 4) // 6 / 3 / 1
+  amount      Decimal  @db.Decimal(36, 18)
+  sourceType  String   // "DEPOSIT" | "PURCHASE"
+  createdAt   DateTime @default(now())
+
+  user        User     @relation("CommissionReceiver", fields: [userId], references: [id])
+  fromUser    User     @relation("CommissionSource", fields: [fromUserId], references: [id])
+}
+
+model SupportTicket {
+  id        Int             @id @default(autoincrement())
+  userId    Int
+  title     String
+  status    String          @default("OPEN") // OPEN | IN_PROGRESS | RESOLVED | CLOSED
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  user      User            @relation(fields: [userId], references: [id])
+  messages  SupportMessage[]
+}
+
+model SupportMessage {
+  id        Int            @id @default(autoincrement())
+  ticketId  Int
+  sender    String         // "USER" | "SYSTEM" | sau này thêm "ADMIN" nếu cần
+  message   String
+  createdAt DateTime       @default(now())
+
+  ticket    SupportTicket  @relation(fields: [ticketId], references: [id])
+}
+
+model FAQ {
+  id        Int      @id @default(autoincrement())
+  question  String
+  answer    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String   // "DEPOSIT" | "WITHDRAW" | "CLAIM" | "COMMISSION" | "PURCHASE"
+  amount    Decimal  @db.Decimal(36, 18)
+  txHash    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
 }
